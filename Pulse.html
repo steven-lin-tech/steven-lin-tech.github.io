@@ -39,9 +39,9 @@
       <ul>
         <li><a href="index.html#hero"><i class="bi bi-house navicon"></i><span>Home</span></a></li>
         <li><a href="index.html#about"><i class="bi bi-person navicon"></i><span>About</span></a></li>
-        <li><a href="index.html#skills"><i class="bi bi-file-earmark-text navicon"></i><span>Skills</span></a></li>
-        <li><a href="index.html#resume"><i class="bi bi-images navicon"></i><span>Resume</span></a></li>
-        <li><a href="index.html#portfolio"><i class="bi bi-hdd-stack navicon"></i><span>Portfolio</span></a></li>
+        <li><a href="index.html#resume"><i class="bi bi-file-earmark-text navicon"></i><span>Resume</span></a></li>
+        <li><a href="index.html#skills"><i class="bi bi-hdd-stack navicon"></i><span>Skills</span></a></li>
+        <li><a href="index.html#portfolio"><i class="bi bi-images navicon"></i><span>Portfolio</span></a></li>
         <li><a href="index.html#achievements"><i class="bi bi-trophy navicon"></i><span>Achievements</span></a></li>
       </ul>
     </nav>
@@ -91,16 +91,16 @@
                 <div class="swiper-wrapper align-items-center">
 
                   <div class="swiper-slide">
-                    <img src="assets/img/Pulse/脈搏ui.png" alt="">
+                    <img src="assets/img/Pulse/pulseui.png" alt="">
                     <figcaption class="text-muted">網頁首頁</figcaption>
                   </div>
 
                   <div class="swiper-slide">
-                    <img src="assets/img/Pulse/脈搏ui2.png" alt="">
+                    <img src="assets/img/Pulse/pulse.png" alt="">
                     <figcaption class="text-muted">網頁蒐集頁面</figcaption>
                   </div>
                   <div class="swiper-slide">
-                    <img src="assets/img/Pulse/脈搏ui3.png" alt="">
+                    <img src="assets/img/Pulse/pulseui3.png" alt="">
                     <figcaption class="text-muted">網頁數據顯示頁面</figcaption>
                   </div>
                   <div class="swiper-slide">
@@ -113,7 +113,7 @@
                   </div>
 
                   <div class="swiper-slide">
-                    <video id="pulse-video" autoplay muted controls playsinline width="100%">
+                    <video preload="none" id="pulse-video" autoplay muted controls playsinline width="100%">
                       <source src="assets/img/Pulse/脈搏.mp4" type="video/mp4">
                       您的瀏覽器不支援 video 標籤。
                     </video>
@@ -177,7 +177,7 @@
       <h3 class="sitename">Steven Lin</h3>
       <p>專注於工業自動化與 AI 開發的軟體工程師，擁有跨領域整合與實作經驗，致力於打造高效穩定的技術解決方案。 </p>
       <div class="social-links d-flex justify-content-center">
-        <a href="https://pda.104.com.tw/" target="_blank"><i class="bi bi-briefcase"></i></a>
+        <a href="https://pda.104.com.tw/profile/share/5fiPqPDswDROWzBzXIXjW2tHHPgUm3SL" target="_blank"><i class="bi bi-briefcase"></i></a>
         <a href="mailto:a21170000@gmail.com" target="_blank"><i class="bi bi-envelope"></i></a>
       </div>
       <div class="container">
@@ -235,8 +235,11 @@
         });
 
         video.addEventListener("play", function () {
-          swiper.autoplay.stop();
+          if (swiper && swiper.autoplay.running) {
+            swiper.autoplay.stop();
+          }
         });
+
 
         video.addEventListener("ended", function () {
           swiper.slideNext();
@@ -244,8 +247,11 @@
         });
 
         video.addEventListener("pause", function () {
-          swiper.autoplay.start();
+          if (video.ended === false) {
+            swiper.autoplay.start();
+          }
         });
+
       }
     });
   </script>

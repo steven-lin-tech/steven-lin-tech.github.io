@@ -37,11 +37,11 @@
     <i class="header-toggle d-xl-none bi bi-list"></i>
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="index.html#hero"><i class="bi bi-house navicon"></i><span>Home</span></a></li>
+        <li><a href="index.html#hero" ><i class="bi bi-house navicon"></i><span>Home</span></a></li>
         <li><a href="index.html#about"><i class="bi bi-person navicon"></i><span>About</span></a></li>
-        <li><a href="index.html#skills"><i class="bi bi-file-earmark-text navicon"></i><span>Skills</span></a></li>
-        <li><a href="index.html#resume"><i class="bi bi-images navicon"></i><span>Resume</span></a></li>
-        <li><a href="index.html#portfolio"><i class="bi bi-hdd-stack navicon"></i><span>Portfolio</span></a></li>
+        <li><a href="index.html#resume"><i class="bi bi-file-earmark-text navicon"></i><span>Resume</span></a></li>
+        <li><a href="index.html#skills"><i class="bi bi-hdd-stack navicon"></i><span>Skills</span></a></li>
+        <li><a href="index.html#portfolio"><i class="bi bi-images navicon"></i><span>Portfolio</span></a></li>
         <li><a href="index.html#achievements"><i class="bi bi-trophy navicon"></i><span>Achievements</span></a></li>
       </ul>
     </nav>
@@ -73,9 +73,6 @@
                   {
                     "loop": true,
                     "speed": 600,
-                    "autoplay": {
-                      "delay": 5000
-                    },
                     "slidesPerView": "auto",
                     "navigation": {
                       "nextEl": ".swiper-button-next",
@@ -88,6 +85,7 @@
                     }
                   }
                 </script>
+                
                 <div class="swiper-wrapper align-items-center">
 
                   <div class="swiper-slide">
@@ -101,7 +99,7 @@
                   </div>
 
                   <div class="swiper-slide">
-                    <video id="goldfoil-video" autoplay muted controls playsinline width="100%">
+                    <video preload="none" id="goldfoil-video" autoplay muted controls playsinline width="100%">
                       <source src="assets/img/GoldFoil/金箔.mp4" type="video/mp4">
                       您的瀏覽器不支援 video 標籤。
                     </video>
@@ -174,7 +172,7 @@
       <h3 class="sitename">Steven Lin</h3>
       <p>專注於工業自動化與 AI 開發的軟體工程師，擁有跨領域整合與實作經驗，致力於打造高效穩定的技術解決方案。 </p>
       <div class="social-links d-flex justify-content-center">
-        <a href="https://pda.104.com.tw/" target="_blank"><i class="bi bi-briefcase"></i></a>
+        <a href="https://pda.104.com.tw/profile/share/5fiPqPDswDROWzBzXIXjW2tHHPgUm3SL" target="_blank"><i class="bi bi-briefcase"></i></a>
         <a href="mailto:a21170000@gmail.com" target="_blank"><i class="bi bi-envelope"></i></a>
       </div>
       <div class="container">
@@ -205,48 +203,65 @@
       const swiperElement = document.querySelector(".portfolio-details-slider.swiper");
       const swiperConfigEl = swiperElement.querySelector(".swiper-config");
       const swiperConfig = JSON.parse(swiperConfigEl.textContent.trim());
-
-      swiperConfig.autoplay.disableOnInteraction = false;
+  
+      // 不啟動 autoplay（重要！）
+      swiperConfig.autoplay = false;
+  
       const swiper = new Swiper(swiperElement, swiperConfig);
-
-      const video = document.getElementById("goldfoil-video");
-
-      if (video) {
-        swiper.on("slideChange", function () {
-          const slides = swiper.slides;
-          slides.forEach((slide) => {
-            const video = slide.querySelector("video");
-            if (video && !slide.classList.contains("swiper-slide-active")) {
-              video.pause();
-              video.currentTime = 0;
-            }
-          });
-
-          const activeSlide = swiper.slides[swiper.activeIndex];
-          const videoInActiveSlide = activeSlide.querySelector("video");
-
-          if (videoInActiveSlide) {
-            swiper.autoplay.stop();
-          } else {
-            swiper.autoplay.start();
+      const allVideos = document.querySelectorAll("video");
+  
+      function isVideoSlide(index) {
+        const slide = swiper.slides[index];
+        return !!slide.querySelector("video");
+      }
+  
+      function startAutoplayIfNotVideo() {
+        if (!isVideoSlide(swiper.activeIndex)) {
+          swiper.params.autoplay = { delay: 5000 };
+          swiper.autoplay.start();
+        }
+      }
+  
+      function stopAutoplay() {
+        if (swiper.autoplay.running) {
+          swiper.autoplay.stop();
+        }
+      }
+  
+      swiper.on("slideChange", function () {
+        swiper.slides.forEach((slide) => {
+          const video = slide.querySelector("video");
+          if (video && !slide.classList.contains("swiper-slide-active")) {
+            video.pause();
+            video.currentTime = 0;
           }
         });
-
-        video.addEventListener("play", function () {
-          swiper.autoplay.stop();
+  
+        if (isVideoSlide(swiper.activeIndex)) {
+          stopAutoplay();
+        } else {
+          startAutoplayIfNotVideo();
+        }
+      });
+  
+      allVideos.forEach((video) => {
+        video.addEventListener("play", () => stopAutoplay());
+        video.addEventListener("pause", () => {
+          if (!video.ended) stopAutoplay();
         });
-
-        video.addEventListener("ended", function () {
+        video.addEventListener("ended", () => {
           swiper.slideNext();
-          swiper.autoplay.start();
+          startAutoplayIfNotVideo();
         });
-
-        video.addEventListener("pause", function () {
-          swiper.autoplay.start();
-        });
-      }
+      });
+  
+      // 初始化後延遲啟動（確保影片頁不要馬上切）
+      setTimeout(() => {
+        startAutoplayIfNotVideo();
+      }, 600);
     });
   </script>
+  
 
 </body>
 
