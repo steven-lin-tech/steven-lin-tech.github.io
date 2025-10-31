@@ -3,7 +3,7 @@ name: Deploy Static Site
 on:
   push:
     branches:
-      - main
+      - main  # 每次 push 到 main 分支都會自動部署
 
 jobs:
   deploy:
@@ -11,10 +11,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # 設定自訂網域
+      - name: Set custom domain
+        run: echo "stevencv.com" > CNAME
+
+      # 自動部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .   # 發佈整個根目錄內容
+          publish_dir: ./   # 若網站根目錄就是 index.html，保留這行
+          cname: stevencv.com
