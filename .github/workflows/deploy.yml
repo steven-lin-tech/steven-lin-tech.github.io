@@ -6,13 +6,12 @@ on:
       - main
 
 permissions:
-  contents: write      # ✅ 給機器人寫入權限
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +22,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}   # ✅ 用 GitHub 內建權杖，不需自己建立
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          publish_branch: main   # ✅ 關鍵：直接部署 main 分支
           cname: stevencv.com
-
