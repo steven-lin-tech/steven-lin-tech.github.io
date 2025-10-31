@@ -3,24 +3,27 @@ name: Deploy Static Site
 on:
   push:
     branches:
-      - main  # 每次 push 到 main 分支都會自動部署
+      - main
+
+permissions:
+  contents: write      # ✅ 給機器人寫入權限
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 設定自訂網域
       - name: Set custom domain
         run: echo "stevencv.com" > CNAME
 
-      # 自動部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # 若網站根目錄就是 index.html，保留這行
+          github_token: ${{ secrets.GITHUB_TOKEN }}   # ✅ 用 GitHub 內建權杖，不需自己建立
+          publish_dir: ./
           cname: stevencv.com
+
